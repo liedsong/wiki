@@ -1,5 +1,6 @@
 package com.song.wiki.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -10,6 +11,7 @@ import org.springframework.core.env.Environment;
 //@ComponentScan({"com.song","com.test"})
 @ComponentScan("com.song")
 @SpringBootApplication
+@MapperScan("com.song.wiki.mapper")
 public class JavaWikiApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(JavaWikiApplication.class);
