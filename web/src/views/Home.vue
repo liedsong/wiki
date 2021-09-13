@@ -46,22 +46,44 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      Content
+      <pre>
+        {{ ebooks }}
+        {{ ebooks2 }}
+      </pre>
+
     </a-layout-content>
   </a-layout>
 </template>
-
+<!--使用{{xxx}}来获取变量-->
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref, reactive, toRef} from 'vue';
 import axios from 'axios';
 
 export default defineComponent({
   name: 'Home',
   setup() {
     console.log("setup");
-    axios.get("http://localhost:8880/ebook/list?name=Spring").then((response) => {
-      console.log(response);
-    })
+    //响应式数据：在js里面，动态的修改这里面的值
+    const ebooks = ref();
+    //reactive里面一般放一个对象,可以放一个空对象   book:[] json对象
+    const ebooks1 = reactive({books:[]});
+
+    onMounted(() => {
+      console.log("onMounted");
+      axios.get("http://localhost:8880/ebook/list?name=Spring").then((response) => {
+        const data = response.data;
+        ebooks.value = data.content;
+        ebooks1.books = data.content;
+        console.log(response);
+      });
+    });
+
+    return {
+      ebooks,
+      ebooks2: toRef(ebooks1,"books")//将变量的属性变为响应式变量
+    }
+
   }
 });
 </script>
+<!--response 里面有一个data，这个data对应的就是后端CommonResp的数据结构-->
