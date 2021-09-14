@@ -91,19 +91,17 @@ for (let i = 0; i < 23; i++) {
 export default defineComponent({
   name: 'Home',
   setup() {
-    console.log("setup");
     //响应式数据：在js里面，动态的修改这里面的值
     const ebooks = ref();
     //reactive里面一般放一个对象,可以放一个空对象   book:[] json对象
     const ebooks1 = reactive({books:[]});
 
     onMounted(() => {
-      console.log("onMounted2222");
+      //Promise.reject出错了就不会执行里面的代码
       axios.get("/ebook/list").then((response) => {
         const data = response.data;
         ebooks.value = data.content;
         ebooks1.books = data.content;
-        console.log(response);
       });
     });
 
