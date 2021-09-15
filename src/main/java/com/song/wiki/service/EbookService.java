@@ -7,6 +7,7 @@ import com.song.wiki.domain.EbookExample;
 import com.song.wiki.mapper.EbookMapper;
 import com.song.wiki.req.EbookReq;
 import com.song.wiki.resp.EbookResp;
+import com.song.wiki.resp.PageResp;
 import com.song.wiki.util.CopyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,14 +27,14 @@ public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
 
-    public List<EbookResp> list(EbookReq req){
+    public PageResp<EbookResp> list(EbookReq req){
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if(!ObjectUtils.isEmpty(req.getName())){
             criteria.andNameLike("%" + req.getName() + "%");
         }
         //PageHelper只对第一个遇到的sql起作用
-        PageHelper.startPage(1,3);
+        PageHelper.startPage(req.getPage(),req.getSize());
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
 
         PageInfo<Ebook> pageInfo = new PageInfo<>(ebookList);
@@ -48,8 +49,13 @@ public class EbookService {
 //            EbookResp ebookResp = CopyUtil.copy(ebook, EbookResp.class);
 //            respList.add(ebookResp);
 //        }
+
         //列表复制
         List<EbookResp> list = CopyUtil.copyList(ebookList, EbookResp.class);
-        return list;
+
+        PageResp<EbookResp> pageResp = new PageResp();
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setList(list);
+        return pageResp;
     }
 }
