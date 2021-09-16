@@ -1,6 +1,6 @@
-package com.song.wiki.resp;
+package com.song.wiki.req;
 
-public class EbookResp {
+public class EbookSaveReq {
     private Long id;
 
     private String name;

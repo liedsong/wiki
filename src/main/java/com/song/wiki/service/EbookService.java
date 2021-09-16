@@ -5,15 +5,15 @@ import com.github.pagehelper.PageInfo;
 import com.song.wiki.domain.Ebook;
 import com.song.wiki.domain.EbookExample;
 import com.song.wiki.mapper.EbookMapper;
-import com.song.wiki.req.EbookReq;
-import com.song.wiki.resp.EbookResp;
+import com.song.wiki.req.EbookQueryReq;
+import com.song.wiki.req.EbookSaveReq;
+import com.song.wiki.resp.EbookQueryResp;
 import com.song.wiki.resp.PageResp;
 import com.song.wiki.util.CopyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
 
-    public PageResp<EbookResp> list(EbookReq req){
+    public PageResp<EbookQueryResp> list(EbookQueryReq req){
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if(!ObjectUtils.isEmpty(req.getName())){
@@ -41,7 +41,7 @@ public class EbookService {
         LOG.info("总行数:{}", pageInfo.getTotal());
         LOG.info("总页数:{}", pageInfo.getPages());
 
-        List<EbookResp> respList = new ArrayList<>();
+        List<EbookQueryResp> respList = new ArrayList<>();
 //        for (Ebook ebook : ebookList) {
 //            EbookResp ebookResp = new EbookResp();
 //            BeanUtils.copyProperties(ebook,ebookResp);
@@ -51,11 +51,26 @@ public class EbookService {
 //        }
 
         //列表复制
-        List<EbookResp> list = CopyUtil.copyList(ebookList, EbookResp.class);
+        List<EbookQueryResp> list = CopyUtil.copyList(ebookList, EbookQueryResp.class);
 
-        PageResp<EbookResp> pageResp = new PageResp();
+        PageResp<EbookQueryResp> pageResp = new PageResp();
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(list);
         return pageResp;
+    }
+
+    /**
+     * 保存
+     */
+    public void save(EbookSaveReq req) {
+        Ebook ebook = CopyUtil.copy(req,Ebook.class);
+        if(ObjectUtils.isEmpty(req.getId())){
+            //新增
+            ebookMapper.insert(ebook);
+        } else{
+            //更新
+            ebookMapper.updateByPrimaryKey(ebook);
+        }
+
     }
 }
