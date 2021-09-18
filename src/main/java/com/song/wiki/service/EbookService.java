@@ -10,6 +10,7 @@ import com.song.wiki.req.EbookSaveReq;
 import com.song.wiki.resp.EbookQueryResp;
 import com.song.wiki.resp.PageResp;
 import com.song.wiki.util.CopyUtil;
+import com.song.wiki.util.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class EbookService {
 
     @Resource
     private EbookMapper ebookMapper;
+
+    @Resource
+    private SnowFlake snowFlake;
 
     public PageResp<EbookQueryResp> list(EbookQueryReq req){
         EbookExample ebookExample = new EbookExample();
@@ -66,6 +70,7 @@ public class EbookService {
         Ebook ebook = CopyUtil.copy(req,Ebook.class);
         if(ObjectUtils.isEmpty(req.getId())){
             //新增
+            ebook.setId(snowFlake.nextId());
             ebookMapper.insert(ebook);
         } else{
             //更新
