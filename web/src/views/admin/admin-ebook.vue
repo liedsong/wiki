@@ -83,7 +83,7 @@ export default defineComponent({
       //当前页
       current: 1,
       //每页的分页条数
-      pageSize: 1001,
+      pageSize: 4,
       total: 0
     });
     const loading = ref(false);
@@ -168,11 +168,12 @@ export default defineComponent({
     const handleModalOk = () => {
       modalLoading.value = true;
       axios.post("/ebook/save", ebook.value).then((response) => {
+        //后端有返回就去掉Loding效果，而不是保存成功才去掉
+        modalLoading.value = false;
         //data=CommonResp
         const data = response.data;
         if(data.success){
           modalVisible.value = false;
-          modalLoading.value = false;
 
           //重新加载列表
           handleQuery({
@@ -180,6 +181,8 @@ export default defineComponent({
             page: pagination.value.current,
             size: pagination.value.pageSize
           });
+        }else {
+          message.error(data.message);
         }
       });
     };
