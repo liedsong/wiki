@@ -34,6 +34,9 @@ public class CategoryService {
     public PageResp<CategoryQueryResp> list(CategoryQueryReq req){
         CategoryExample categoryExample = new CategoryExample();
         CategoryExample.Criteria criteria = categoryExample.createCriteria();
+        if(!ObjectUtils.isEmpty(req.getName())){
+            criteria.andNameLike("%" + req.getName() + "%");
+        }
         //PageHelper只对第一个遇到的sql起作用
         PageHelper.startPage(req.getPage(),req.getSize());
         List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
