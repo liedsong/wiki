@@ -282,6 +282,13 @@ export default defineComponent({
           level1.value = [];
           level1.value = Tool.array2Tree(categorys, 0);
           console.log("树形结构:", level1);
+
+          //加载完分类后，在加载电子书，否则如果分类树加载很慢，则电子书列表的渲染会报错
+          handleQuery({
+            //这里的属性名要和后端PageReq里的属性名对应起来要一致
+            page: 1,
+            size: pagination.value.pageSize
+          });
         }else{
           message.error(data.message);
         }
@@ -300,11 +307,7 @@ export default defineComponent({
     onMounted(() => {
       //初始时，应该把所有分类查出来
       handleQueryCategory();
-      handleQuery({
-        //这里的属性名要和后端PageReq里的属性名对应起来要一致
-        page: 1,
-        size: pagination.value.pageSize
-      });
+
     });
 
     return {
