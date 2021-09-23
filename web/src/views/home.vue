@@ -84,19 +84,24 @@ export default defineComponent({
     //reactive里面一般放一个对象,可以放一个空对象   book:[] json对象
     const ebooks1 = reactive({books:[]});
 
-    onMounted(() => {
-      handleQueryCategory();
-      //Promise.reject出错了就不会执行里面的代码
+
+
+    const handleQueryEbook = () => {
       axios.get("/ebook/list", {
         params: {
           page: 1,
-          size: 1000
+          size: 1000,
+          categoryId2: categoryId2
         }
       }).then((response) => {
         const data = response.data;
         ebooks.value = data.content.list;
         // ebooks1.books = data.content;
       });
+    };
+
+    onMounted(() => {
+      handleQueryCategory();
     });
 
     //从分类管理中拷贝
@@ -119,20 +124,23 @@ export default defineComponent({
           message.error(data.message);
         }
       });
-    }
+    };
 
 
     const isShowWelcome = ref(true);
+    let categoryId2 = 0;
 
 
     const handleClick = (value: any) => {
       // console.log("menu click", value)
-      // if (value.key === 'welcome') {
-      //   isShowWelcome.value = true;
-      // } else {
-      //   isShowWelcome.value = false;
-      // }
-      isShowWelcome.value = value.key === 'welcome';
+      if (value.key === 'welcome') {
+        isShowWelcome.value = true;
+      } else {
+        categoryId2 = value.key;
+        isShowWelcome.value = false;
+        handleQueryEbook();
+      }
+      // isShowWelcome.value = value.key === 'welcome';
     };
 
 
