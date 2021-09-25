@@ -228,6 +228,39 @@ export default defineComponent({
       }
     };
 
+    const ids: Array<string> = [];
+    /**
+     * 查找整根树枝
+     *将某节点及其子节点全部放入所需删除的id数组
+     */
+    const getDeleteIds = (treeSelectData: any, id: any) => {
+      // console.log(treeSelectData, id);
+      // 遍历数组，即遍历某一层节点
+      for (let i = 0; i < treeSelectData.length; i++) {
+        const node = treeSelectData[i];
+        if (node.id === id) {
+          // 如果当前节点就是目标节点
+          // console.log("disabled", node);
+          // 将目标节点放入结果集
+          ids.push(id);
+
+          // 遍历所有子节点，
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            for (let j = 0; j < children.length; j++) {
+              getDeleteIds(children, children[j].id)
+            }
+          }
+        } else {
+          // 如果当前节点不是目标节点，则到其子节点再找找看。
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            getDeleteIds(children, id);
+          }
+        }
+      }
+    };
+
     /**
      * 编辑
      */
@@ -258,7 +291,8 @@ export default defineComponent({
     };
 
     const handleDelete = (id: number) => {
-      axios.delete("/doc/delete/" + id).then((response) => {
+      getDeleteIds(level1.value,id);
+      axios.delete("/doc/delete/" + ids.join(",")).then((response) => {
         //data=CommonResp
         const data = response.data;
         if(data.success){
