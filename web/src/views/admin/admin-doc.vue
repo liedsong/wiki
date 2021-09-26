@@ -195,7 +195,8 @@ export default defineComponent({
     //因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独用一个响应式变量来表示
     const treeSelectData = ref();
     treeSelectData.value = [];
-    const doc = ref({});
+    const doc = ref();
+    doc.value = {};
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content');
@@ -203,6 +204,7 @@ export default defineComponent({
 
     const handleSave = () => {
       modalLoading.value = true;
+      doc.value.content = editor.txt.html();
       axios.post("/doc/save", doc.value).then((response) => {
         //后端有返回就去掉Loding效果，而不是保存成功才去掉
         modalLoading.value = false;
