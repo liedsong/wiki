@@ -92,6 +92,11 @@
       <a-form-item label="排序">
         <a-input v-model:value="doc.sort" />
       </a-form-item>
+      <a-form-item label="内容">
+        <div id="content">
+
+        </div>
+      </a-form-item>
     </a-form>
   </a-modal>
 
@@ -104,7 +109,7 @@ import {message, Modal} from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
-
+import E from "wangeditor";
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -173,13 +178,15 @@ export default defineComponent({
     };
 
 
-    //------------表单------------------
+    //-------------------表单------------------
     //因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独用一个响应式变量来表示
     const treeSelectData = ref();
     treeSelectData.value = [];
     const doc = ref({});
     const modalVisible = ref(false);
     const modalLoading = ref(false);
+    const editor = new E('#content');
+
     const handleModalOk = () => {
       modalLoading.value = true;
       axios.post("/doc/save", doc.value).then((response) => {
@@ -277,6 +284,11 @@ export default defineComponent({
 
       //在选择树数组前面添加一个"无"字
       treeSelectData.value.unshift({id: 0,name: '无'});
+
+      //异步执行
+      setTimeout(function () {
+        editor.create();
+      },100);
     }
 
     /**
@@ -291,6 +303,12 @@ export default defineComponent({
       treeSelectData.value = Tool.copy(level1.value);
       //在选择树数组前面添加一个"无"字
       treeSelectData.value.unshift({id: 0,name: '无'});
+
+      //异步执行
+      setTimeout(function () {
+        editor.create();
+      },100);
+
     };
 
     const handleDelete = (id: number) => {
