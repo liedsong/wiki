@@ -24,13 +24,18 @@
               </a-form-item>
             </a-form>
           </p>
+<!--          v-if 是“真正”的条件渲染，因为它会确保在切换过程中条件块内的事件监听器和子组件适当地被销毁和重建。-->
+<!--          v-if 也是惰性的：如果在初始渲染时条件为假，则什么也不做——直到条件第一次变为真时，才会开始渲染条件块。-->
+<!--          我们等到level1有数据后才去展示出这个表格-->
           <a-table
+              v-if="level1.length > 0"
               :columns="columns"
               :row-key="record => record.id"
               :data-source="level1"
               :loading="loading"
               :pagination="false"
               :size="small"
+              :defaultExpandAllRows="true"
           >
             <template #name="{ text, record }">
               {{record.sort}} {{text}}
@@ -162,6 +167,7 @@ export default defineComponent({
      * }]
      */
     const level1 = ref();
+    level1.value = [];
 
     /**
      * 数据查询
