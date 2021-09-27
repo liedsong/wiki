@@ -116,7 +116,7 @@ export default defineComponent({
       //当前页
       current: 1,
       //每页的分页条数
-      pageSize: 4,
+      pageSize: 10,
       total: 0
     });
     const loading = ref(false);
