@@ -12,6 +12,7 @@
             @select="onSelect"
             :replaceFields="{title: 'name', key: 'id', value: 'id'}"
             :defaultExpandAll="true"
+            :defaultSelectKeys="defaultSelectKeys"
           >
 
           </a-tree>
@@ -41,6 +42,8 @@ export default defineComponent({
 
     //响应式数据：在js里面，动态的修改这里面的值
     const docs = ref();
+    const defaultSelectKeys = ref();
+    defaultSelectKeys.value = [];
 
     /**
      * 一级文档树，children属性就是二级文档
@@ -57,6 +60,23 @@ export default defineComponent({
     level1.value = [];
     const html = ref();
 
+
+    /**
+     * 内容查询
+     */
+    const handleQueryContent = (id: number) => {
+
+      axios.get("/doc/find-content/" + id).then((response) => {
+        const data = response.data;
+        if(data.success){
+          html.value = data.content;
+        }else{
+          message.error(data.message);
+        }
+      });
+    };
+
+
     /**
      * 数据查询
      */
@@ -69,22 +89,11 @@ export default defineComponent({
 
           level1.value = [];
           level1.value = Tool.array2Tree(docs.value, 0);
+          if(Tool.isNotEmpty(level1)) {
+            defaultSelectKeys.value = [level1.value[0].id];
+            handleQueryContent(level1.value[0].id);
+          }
           console.log("树形结构:", level1);
-        }else{
-          message.error(data.message);
-        }
-      });
-    };
-
-    /**
-     * 内容查询
-     */
-    const handleQueryContent = (id: number) => {
-
-      axios.get("/doc/find-content/" + id).then((response) => {
-        const data = response.data;
-        if(data.success){
-          html.value = data.content;
         }else{
           message.error(data.message);
         }
@@ -109,6 +118,7 @@ export default defineComponent({
 
       html,
       onSelect,
+      defaultSelectKeys
     }
   }
 });
