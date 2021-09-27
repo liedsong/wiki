@@ -368,9 +368,10 @@ export default defineComponent({
       //清空富文本框
       editor.txt.html("");
       modalVisible.value = true;
-      // doc.value = {
-      //   ebookId: route.query.ebookId
-      // };
+      //清空文档，保留电子书id
+      doc.value = {
+        ebookId: route.query.ebookId
+      };
 
       treeSelectData.value = Tool.copy(level1.value);
       //在选择树数组前面添加一个"无"字
