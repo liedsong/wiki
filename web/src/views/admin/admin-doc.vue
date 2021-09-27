@@ -132,6 +132,10 @@ export default defineComponent({
 
     const loading = ref(false);
 
+    //因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独用一个响应式变量来表示
+    const treeSelectData = ref();
+    treeSelectData.value = [];
+
     const columns = [
       {
         title: '名称',
@@ -184,6 +188,14 @@ export default defineComponent({
           level1.value = [];
           level1.value = Tool.array2Tree(docs.value, 0);
           console.log("树形结构:", level1);
+
+          doc.value = {
+            ebookId: route.query.ebookId
+          };
+
+          treeSelectData.value = Tool.copy(level1.value);
+          //在选择树数组前面添加一个"无"字
+          treeSelectData.value.unshift({id: 0,name: '无'});
         }else{
           message.error(data.message);
         }
@@ -207,9 +219,6 @@ export default defineComponent({
 
 
     //-------------------表单------------------
-    //因为树选择组件的属性状态，会随当前编辑的节点而变化，所以单独用一个响应式变量来表示
-    const treeSelectData = ref();
-    treeSelectData.value = [];
     const doc = ref();
     doc.value = {};
     const modalVisible = ref(false);
