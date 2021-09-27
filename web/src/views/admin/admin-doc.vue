@@ -196,9 +196,9 @@ export default defineComponent({
           level1.value = Tool.array2Tree(docs.value, 0);
           console.log("树形结构:", level1);
 
-          doc.value = {
-            ebookId: route.query.ebookId
-          };
+          // doc.value = {
+          //   ebookId: route.query.ebookId
+          // };
 
           treeSelectData.value = Tool.copy(level1.value);
           //在选择树数组前面添加一个"无"字
@@ -227,7 +227,9 @@ export default defineComponent({
 
     //-------------------表单------------------
     const doc = ref();
-    doc.value = {};
+    doc.value = {
+      ebookId: route.query.ebookId
+    };
     const modalVisible = ref(false);
     const modalLoading = ref(false);
     const editor = new E('#content');
@@ -366,9 +368,9 @@ export default defineComponent({
       //清空富文本框
       editor.txt.html("");
       modalVisible.value = true;
-      doc.value = {
-        ebookId: route.query.ebookId
-      };
+      // doc.value = {
+      //   ebookId: route.query.ebookId
+      // };
 
       treeSelectData.value = Tool.copy(level1.value);
       //在选择树数组前面添加一个"无"字
