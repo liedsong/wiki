@@ -8,6 +8,7 @@ import com.song.wiki.exception.BusinessException;
 import com.song.wiki.exception.BusinessExceptionCode;
 import com.song.wiki.mapper.UserMapper;
 import com.song.wiki.req.UserQueryReq;
+import com.song.wiki.req.UserResetPasswordReq;
 import com.song.wiki.req.UserSaveReq;
 import com.song.wiki.resp.UserQueryResp;
 import com.song.wiki.resp.PageResp;
@@ -108,5 +109,14 @@ public class UserService {
         }else{
             return userList.get(0);
         }
+    }
+
+    /**
+     * 修改密码
+     * @param req
+     */
+    public void resetPassword(UserResetPasswordReq req) {
+        User user = CopyUtil.copy(req,User.class);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 }

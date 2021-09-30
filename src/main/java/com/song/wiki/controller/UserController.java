@@ -1,6 +1,7 @@
 package com.song.wiki.controller;
 
 import com.song.wiki.req.UserQueryReq;
+import com.song.wiki.req.UserResetPasswordReq;
 import com.song.wiki.req.UserSaveReq;
 import com.song.wiki.resp.CommonResp;
 import com.song.wiki.resp.UserQueryResp;
@@ -39,6 +40,14 @@ public class UserController {
     public CommonResp delete(@PathVariable Long id){
         CommonResp resp = new CommonResp<>();
         userService.delete(id);
+        return resp;
+    }
+
+    @PostMapping("/reset-password")
+    public CommonResp resetPassword(@Valid @RequestBody UserResetPasswordReq req){
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp resp = new CommonResp<>();
+        userService.resetPassword(req);
         return resp;
     }
 }
