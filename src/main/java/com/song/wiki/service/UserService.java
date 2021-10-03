@@ -7,9 +7,11 @@ import com.song.wiki.domain.UserExample;
 import com.song.wiki.exception.BusinessException;
 import com.song.wiki.exception.BusinessExceptionCode;
 import com.song.wiki.mapper.UserMapper;
+import com.song.wiki.req.UserLoginReq;
 import com.song.wiki.req.UserQueryReq;
 import com.song.wiki.req.UserResetPasswordReq;
 import com.song.wiki.req.UserSaveReq;
+import com.song.wiki.resp.UserLoginResp;
 import com.song.wiki.resp.UserQueryResp;
 import com.song.wiki.resp.PageResp;
 import com.song.wiki.util.CopyUtil;
@@ -118,5 +120,28 @@ public class UserService {
     public void resetPassword(UserResetPasswordReq req) {
         User user = CopyUtil.copy(req,User.class);
         userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    /**
+     * 登录
+     * @param req
+     */
+    public UserLoginResp login(UserLoginReq req) {
+        User userDB = selectByLoginName(req.getLoginName());
+        if(ObjectUtils.isEmpty(userDB)){
+            //用户名不存在
+            LOG.info("用户名不存在，{}", req.getLoginName());
+            throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+        }else{
+            if(userDB.getPassword().equals(req.getPassword())){
+                //登录成功
+                UserLoginResp userLoginResp = CopyUtil.copy(userDB,UserLoginResp.class);
+                return userLoginResp;
+            }else{
+                //登陆失败，密码不对
+                LOG.info("密码不对，输入密码，{}", req.getPassword(),userDB.getPassword());
+                throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+            }
+        }
     }
 }
