@@ -1,13 +1,21 @@
 <template>
   <a-layout-footer style="text-align: center">
-    Song电子书
+    Song电子书 你好:{{user.name}}
   </a-layout-footer>
 </template>
 
 <script lang="ts">
-  import { defineComponent } from 'vue';
+import {computed, defineComponent} from 'vue';
+  import store from "@/store";
 
   export default defineComponent({
-    name: 'the-footer'
+    name: 'the-footer',
+    setup(){
+      const user = computed(() => store.state.user);
+
+      return {
+        user
+      }
+    }
   });
 </script>
