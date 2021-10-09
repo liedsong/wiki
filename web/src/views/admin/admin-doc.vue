@@ -127,6 +127,7 @@ import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import E from "wangeditor";
+import {isEmptyContent} from "ant-design-vue/es/_util/props-util";
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -200,9 +201,11 @@ export default defineComponent({
           //   ebookId: route.query.ebookId
           // };
 
-          treeSelectData.value = Tool.copy(level1.value);
+          treeSelectData.value = Tool.copy(level1.value) || [];
           //在选择树数组前面添加一个"无"字
+
           treeSelectData.value.unshift({id: 0,name: '无'});
+
         }else{
           message.error(data.message);
         }

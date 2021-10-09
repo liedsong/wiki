@@ -1,6 +1,6 @@
 <template>
   <a-layout-footer style="text-align: center">
-    Song电子书 你好:{{user.name}}
+    Song电子书<span v-if="user.id">你好:{{user.name}}</span>
   </a-layout-footer>
 </template>
 
