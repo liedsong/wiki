@@ -7,6 +7,7 @@ import com.song.wiki.domain.Doc;
 import com.song.wiki.domain.DocExample;
 import com.song.wiki.mapper.ContentMapper;
 import com.song.wiki.mapper.DocMapper;
+import com.song.wiki.mapper.MyDocMapper;
 import com.song.wiki.req.DocQueryReq;
 import com.song.wiki.req.DocSaveReq;
 import com.song.wiki.resp.DocQueryResp;
@@ -29,6 +30,9 @@ public class DocService {
 
     @Resource
     private DocMapper docMapper;
+
+    @Resource
+    private MyDocMapper myDocMapper;
 
     @Resource
     private ContentMapper contentMapper;
@@ -92,6 +96,8 @@ public class DocService {
         if(ObjectUtils.isEmpty(req.getId())){
             //新增
             doc.setId(snowFlake.nextId());
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
             docMapper.insert(doc);
             content.setId(doc.getId());
             contentMapper.insert(content);
@@ -121,6 +127,8 @@ public class DocService {
 
     public String findContent(Long id){
         Content content = contentMapper.selectByPrimaryKey(id);
+        //更新文档阅读数
+        myDocMapper.updateViewCount(id);
         if(ObjectUtils.isEmpty(content)) {
             return "";
         }else{
