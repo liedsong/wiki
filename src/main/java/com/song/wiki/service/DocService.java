@@ -18,6 +18,7 @@ import com.song.wiki.util.CopyUtil;
 import com.song.wiki.util.RedisUtil;
 import com.song.wiki.util.RequestContext;
 import com.song.wiki.util.SnowFlake;
+import com.song.wiki.websocket.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -47,6 +48,9 @@ public class DocService {
 
     @Resource
     private RedisUtil redisUtil;
+
+    @Resource
+    private WebSocketServer webSocketServer;
 
     public List<DocQueryResp> all(Long ebookId){
         DocExample docExample = new DocExample();
@@ -152,6 +156,10 @@ public class DocService {
         } else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
         }
+
+        //推送消息给ws
+        Doc docDB = docMapper.selectByPrimaryKey(id);
+        webSocketServer.sendInfo("【" + docDB.getName() + "】被点赞!");
     }
 
     public void updateEbookInfo() {
