@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.song.wiki.domain.Content;
 import com.song.wiki.domain.Doc;
 import com.song.wiki.domain.DocExample;
+import com.song.wiki.exception.BusinessException;
+import com.song.wiki.exception.BusinessExceptionCode;
 import com.song.wiki.mapper.ContentMapper;
 import com.song.wiki.mapper.DocMapper;
 import com.song.wiki.mapper.MyDocMapper;
@@ -13,9 +15,12 @@ import com.song.wiki.req.DocSaveReq;
 import com.song.wiki.resp.DocQueryResp;
 import com.song.wiki.resp.PageResp;
 import com.song.wiki.util.CopyUtil;
+import com.song.wiki.util.RedisUtil;
+import com.song.wiki.util.RequestContext;
 import com.song.wiki.util.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -39,6 +44,9 @@ public class DocService {
 
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     public List<DocQueryResp> all(Long ebookId){
         DocExample docExample = new DocExample();
@@ -137,7 +145,12 @@ public class DocService {
     }
 
     public void vote(Long id){
-        //更新文档点赞数
-        myDocMapper.updateVoteCount(id);
+        String ip = RequestContext.getRemoteAddr();
+        //24小时内不能重复
+        if(redisUtil.validateRepeat("DOC_VOTE" + id + "_" + ip, 3600*24)) {
+            myDocMapper.updateVoteCount(id);
+        } else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
+        }
     }
 }
