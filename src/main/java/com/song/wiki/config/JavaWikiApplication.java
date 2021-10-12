@@ -7,11 +7,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 //@ComponentScan({"com.song","com.test"})
 @ComponentScan("com.song")
 @SpringBootApplication
 @MapperScan("com.song.wiki.mapper")
+@EnableScheduling
 public class JavaWikiApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(JavaWikiApplication.class);
