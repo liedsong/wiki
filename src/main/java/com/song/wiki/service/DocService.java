@@ -19,6 +19,7 @@ import com.song.wiki.util.RedisUtil;
 import com.song.wiki.util.RequestContext;
 import com.song.wiki.util.SnowFlake;
 import com.song.wiki.websocket.WebSocketServer;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -54,6 +55,9 @@ public class DocService {
 
     @Resource
     private WebSocketService webSocketService;
+
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
 
     public List<DocQueryResp> all(Long ebookId){
         DocExample docExample = new DocExample();
@@ -158,7 +162,7 @@ public class DocService {
     public void vote(Long id){
         String ip = RequestContext.getRemoteAddr();
         //24小时内不能重复
-        if(redisUtil.validateRepeat("DOC_VOTE" + id + "_" + ip, 3600*24)) {
+        if(redisUtil.validateRepeat("DOC_VOTE" + id + "_" + ip, 5)) {
             myDocMapper.updateVoteCount(id);
         } else {
             throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
@@ -167,7 +171,8 @@ public class DocService {
         //推送消息给ws
         Doc docDB = docMapper.selectByPrimaryKey(id);
         String logId = MDC.get("LOG_ID");
-        webSocketService.sendInfo("【" + docDB.getName() + "】被点赞!",logId);
+//        webSocketService.sendInfo("【" + docDB.getName() + "】被点赞!",logId);
+        rocketMQTemplate.convertAndSend("VOTE_TOPIC","【" + docDB.getName() + "】被点赞!");
     }
 
 
