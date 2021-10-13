@@ -25,6 +25,7 @@ import org.slf4j.MDC;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -103,7 +104,10 @@ public class DocService {
 
     /**
      * 保存
+     * 添加事务，保证两张表要么都保存成功，要么都保存失败
+     * 同一个类里a调用b，b的事务注解是不生效的
      */
+    @Transactional
     public void save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req,Doc.class);
         Content content = CopyUtil.copy(req,Content.class);
@@ -113,6 +117,7 @@ public class DocService {
             doc.setViewCount(0);
             doc.setVoteCount(0);
             docMapper.insert(doc);
+
             content.setId(doc.getId());
             contentMapper.insert(content);
         } else{
