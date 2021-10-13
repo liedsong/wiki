@@ -21,6 +21,7 @@ import com.song.wiki.util.SnowFlake;
 import com.song.wiki.websocket.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -160,7 +161,8 @@ public class DocService {
 
         //推送消息给ws
         Doc docDB = docMapper.selectByPrimaryKey(id);
-        webSocketService.sendInfo("【" + docDB.getName() + "】被点赞!");
+        String logId = MDC.get("LOG_ID");
+        webSocketService.sendInfo("【" + docDB.getName() + "】被点赞!",logId);
     }
 
 
