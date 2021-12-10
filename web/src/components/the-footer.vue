@@ -1,6 +1,6 @@
 <template>
   <a-layout-footer style="text-align: center">
-    Song电子书,<span v-if="user.id">欢迎:{{user.name}}</span>
+    Song电子书<span v-if="user.id">，欢迎:{{user.name}}</span>
   </a-layout-footer>
 </template>
 
