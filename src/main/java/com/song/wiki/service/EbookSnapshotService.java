@@ -41,5 +41,11 @@ public class EbookSnapshotService {
     }
 
 
-
+    /**
+     * 30天数值统计
+     * @return
+     */
+    public List<EbookSnapshotResp> get30Statistic() {
+        return myEbookSnapshotMapper.get30Statistic();
+    }
 }
