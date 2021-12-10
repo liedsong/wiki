@@ -10,6 +10,7 @@ import com.song.wiki.mapper.MyEbookSnapshotMapper;
 import com.song.wiki.req.EbookQueryReq;
 import com.song.wiki.req.EbookSaveReq;
 import com.song.wiki.resp.EbookQueryResp;
+import com.song.wiki.resp.EbookSnapshotResp;
 import com.song.wiki.resp.PageResp;
 import com.song.wiki.util.CopyUtil;
 import com.song.wiki.util.SnowFlake;
@@ -32,6 +33,11 @@ public class EbookSnapshotService {
 
     public void getSnapshot(){
         myEbookSnapshotMapper.getSnapshot();
+    }
+
+    public List<EbookSnapshotResp> getStatistic(){
+        List<EbookSnapshotResp> list= myEbookSnapshotMapper.getStatistic();
+        return list;
     }
 
 

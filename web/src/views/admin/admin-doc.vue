@@ -151,15 +151,7 @@ export default defineComponent({
         //这一列还有dataIndex参数，所以这一列的渲染对应的text参数，就是这个dataIndex
         slots: { customRender: 'name' }
       },
-      // {
-      //   title: '父文档',
-      //   key: 'parent',
-      //   dataIndex: 'parent'
-      // },
-      // {
-      //   title: '顺序',
-      //   dataIndex: 'sort',
-      // },
+
       {
         title: 'action',
         key: 'action',
@@ -201,6 +193,7 @@ export default defineComponent({
           //   ebookId: route.query.ebookId
           // };
 
+          //父文档下拉框初始化，相当于点击新增
           treeSelectData.value = Tool.copy(level1.value) || [];
           //在选择树数组前面添加一个"无"字
 
@@ -376,7 +369,7 @@ export default defineComponent({
         ebookId: route.query.ebookId
       };
 
-      treeSelectData.value = Tool.copy(level1.value);
+      treeSelectData.value = Tool.copy(level1.value)||[];
       //在选择树数组前面添加一个"无"字
       treeSelectData.value.unshift({id: 0,name: '无'});
 
