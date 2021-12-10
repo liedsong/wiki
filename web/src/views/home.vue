@@ -30,7 +30,7 @@
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
       <div class="welcome" v-show="isShowWelcome">
-        <h2>欢迎使用知识库!</h2>
+        <TheWelcome></TheWelcome>
       </div>
       <a-list v-show="!isShowWelcome" item-layout="vertical" size="large" :grid="{ gutter: 20, column: 3}" :data-source="ebooks">
         <template #renderItem="{ item }">
@@ -71,23 +71,13 @@ import { defineComponent, onMounted, ref, reactive, toRef} from 'vue';
 import axios from 'axios';
 import {Tool} from "@/util/tool";
 import {message} from "ant-design-vue";
-
-// const listData: any = [];
-//
-// for (let i = 0; i < 23; i++) {
-//   listData.push({
-//     href: 'https://www.antdv.com/',
-//     title: `ant design vue part ${i}`,
-//     avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-//     description:
-//         'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-//     content:
-//         'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-//   });
-// }
+import TheWelcome from '@/components/the-welcome.vue';
 
 export default defineComponent({
   name: 'Home',
+  components:{
+    TheWelcome,
+  },
   setup() {
     //响应式数据：在js里面，动态的修改这里面的值
     const ebooks = ref();
